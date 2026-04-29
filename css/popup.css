@@ -1,0 +1,420 @@
+/* ============================================
+   QR Code Generator — Popup Styles
+   ============================================ */
+
+/* --- Design Tokens --- */
+:root {
+  --color-bg: #f5f5f7;
+  --color-surface: #ffffff;
+  --color-text: #1d1d1f;
+  --color-text-secondary: #86868b;
+  --color-text-tertiary: #a1a1a6;
+  --color-border: #d2d2d7;
+  --color-hover: #ebebef;
+  --color-danger: #ff3b30;
+  --color-danger-bg: #fff0f0;
+  --color-pin: #ff9500;
+  --color-accent: #007aff;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 16px;
+  --radius-input: 12px;
+
+  --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  --popup-width: 320px;
+}
+
+/* --- Dark Mode --- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #1c1c1e;
+    --color-surface: #2c2c2e;
+    --color-text: #ffffff;
+    --color-text-secondary: #98989f;
+    --color-text-tertiary: #6c6c70;
+    --color-border: #3a3a3c;
+    --color-hover: #3a3a3c;
+    --color-danger: #ff453a;
+    --color-danger-bg: #3a2a2a;
+    --color-pin: #ff9f0a;
+    --color-accent: #0a84ff;
+  }
+}
+
+/* Manual dark mode override */
+[data-theme="dark"] {
+  --color-bg: #1c1c1e;
+  --color-surface: #2c2c2e;
+  --color-text: #ffffff;
+  --color-text-secondary: #98989f;
+  --color-text-tertiary: #6c6c70;
+  --color-border: #3a3a3c;
+  --color-hover: #3a3a3c;
+  --color-danger: #ff453a;
+  --color-danger-bg: #3a2a2a;
+  --color-pin: #ff9f0a;
+  --color-accent: #0a84ff;
+}
+
+[data-theme="light"] {
+  --color-bg: #f5f5f7;
+  --color-surface: #ffffff;
+  --color-text: #1d1d1f;
+  --color-text-secondary: #86868b;
+  --color-text-tertiary: #a1a1a6;
+  --color-border: #d2d2d7;
+  --color-hover: #ebebef;
+  --color-danger: #ff3b30;
+  --color-danger-bg: #fff0f0;
+  --color-pin: #ff9500;
+  --color-accent: #007aff;
+}
+
+/* --- Reset --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: var(--popup-width);
+  font-family: var(--font-stack);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* --- Theme Toggle --- */
+.theme-toggle-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 6px;
+  padding: 0 6px;
+}
+
+.btn-theme {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btn-theme:hover {
+  background: var(--color-hover);
+}
+
+.btn-theme svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--color-text-secondary);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.btn-theme .icon-moon {
+  display: none;
+  fill: var(--color-text-secondary);
+  stroke: none;
+}
+
+.btn-theme .icon-sun {
+  display: block;
+}
+
+/* Dark mode: show moon, hide sun */
+@media (prefers-color-scheme: dark) {
+  .btn-theme .icon-sun {
+    display: block;
+  }
+  .btn-theme .icon-moon {
+    display: none;
+  }
+}
+
+[data-theme="dark"] .btn-theme .icon-sun {
+  display: none;
+}
+
+[data-theme="dark"] .btn-theme .icon-moon {
+  display: block;
+}
+
+[data-theme="light"] .btn-theme .icon-sun {
+  display: block;
+}
+
+[data-theme="light"] .btn-theme .icon-moon {
+  display: none;
+}
+.container {
+  padding: 8px;
+}
+
+.section {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: 14px;
+  margin-bottom: 6px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+/* --- Input --- */
+.input-group {
+  position: relative;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px 76px 10px 12px;
+  border: none;
+  background: var(--color-bg);
+  border-radius: var(--radius-input);
+  font-size: 14px;
+  color: var(--color-text);
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+.input-group input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.input-group input:focus {
+  background: var(--color-hover);
+}
+
+/* --- Action buttons in input bar --- */
+.input-actions {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 2px;
+}
+
+.btn-input {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: none;
+  color: var(--color-text-tertiary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btn-input:hover {
+  color: var(--color-text);
+  background: var(--color-hover);
+}
+
+.btn-input svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.btn-input.download-btn {
+  color: var(--color-text-secondary);
+}
+
+.btn-input.download-btn:hover {
+  color: var(--color-accent);
+}
+
+/* --- QR Code --- */
+.qr-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+#qrcode {
+  display: block;
+  border-radius: var(--radius-md);
+}
+
+/* --- History --- */
+.history-section {
+  padding: 0;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.history-title {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-clear {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+}
+
+.btn-clear:hover {
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+}
+
+.history-list {
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  position: relative;
+}
+
+.history-item:hover {
+  background: var(--color-bg);
+}
+
+.history-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.history-url {
+  font-size: 13px;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+}
+
+.history-date {
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  margin-top: 2px;
+}
+
+.history-item.pinned .history-url::before {
+  content: '\1F4CC';
+  font-size: 10px;
+  margin-right: 4px;
+}
+
+.history-actions {
+  display: none;
+  flex-shrink: 0;
+  gap: 2px;
+  margin-left: 6px;
+}
+
+.history-item:hover .history-actions {
+  display: flex;
+}
+
+.btn-icon {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  transition: all 0.15s ease;
+}
+
+.btn-icon:hover {
+  background: var(--color-hover);
+}
+
+.btn-icon.pin-active {
+  color: var(--color-pin);
+}
+
+.btn-icon.delete-btn:hover {
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+}
+
+.history-empty {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* --- Scrollbar --- */
+.history-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+/* --- Toast --- */
+.toast-container {
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--color-text);
+  color: var(--color-surface);
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
