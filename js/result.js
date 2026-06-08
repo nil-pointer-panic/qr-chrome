@@ -54,7 +54,7 @@
       const scale = QR_CONFIG.DOWNLOAD_SCALE;
       const offscreen = document.createElement('canvas');
       renderModules(qr, offscreen, scale, QR_CONFIG.MARGIN * scale);
-      downloadCanvas(offscreen);
+      downloadCanvas(offscreen, text);
     });
 
     document.getElementById('btn-copy-text').addEventListener('click', () => {
@@ -193,11 +193,26 @@
     }
   }
 
-  function downloadCanvas(canvas) {
+  function downloadCanvas(canvas, text) {
     const a = document.createElement('a');
-    a.download = 'qrcode.png';
+    a.download = downloadName(text);
     a.href = canvas.toDataURL('image/png');
     a.click();
+  }
+
+  function downloadName(text) {
+    const pad = (n) => (n < 10 ? '0' + n : '' + n);
+    const now = new Date();
+    const date = pad(now.getFullYear() % 100) + pad(now.getMonth() + 1) + pad(now.getDate());
+
+    try {
+      const host = new URL(text).hostname.replace(/^www\./, '');
+      if (host) {
+        const domain = host.split('.').slice(-2).join('_');
+        return 'qr_' + domain + '_' + date + '.png';
+      }
+    } catch { /* not a URL */ }
+    return 'qr_' + date + '.png';
   }
 
   // ---- Utilities ----
