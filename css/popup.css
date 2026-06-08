@@ -100,6 +100,11 @@ body {
   gap: 2px;
 }
 
+.toolbar-right {
+  display: flex;
+  gap: 2px;
+}
+
 .btn-toolbar {
   width: 32px;
   height: 32px;
@@ -231,6 +236,31 @@ body {
   background: var(--color-hover);
 }
 
+/* --- Input Hidden --- */
+[data-input-hidden] .input-group {
+  display: none;
+}
+
+.btn-toolbar .icon-eye {
+  display: block;
+}
+
+.btn-toolbar .icon-eye-off {
+  display: none;
+}
+
+.btn-toolbar.toggle-active .icon-eye {
+  display: none;
+}
+
+.btn-toolbar.toggle-active .icon-eye-off {
+  display: block;
+}
+
+.btn-toolbar.toggle-active {
+  color: var(--color-text-secondary);
+}
+
 /* --- QR Code --- */
 .qr-wrapper {
   display: flex;
@@ -318,12 +348,6 @@ body {
   margin-top: 2px;
 }
 
-.history-item.pinned .history-url::before {
-  content: '\1F4CC';
-  font-size: 10px;
-  margin-right: 4px;
-}
-
 .history-actions {
   display: none;
   flex-shrink: 0;
@@ -345,9 +369,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
   color: var(--color-text-secondary);
   transition: all 0.15s ease;
+}
+
+.btn-icon svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
 }
 
 .btn-icon:hover {

@@ -19,6 +19,7 @@
     // Storage
     STORAGE_KEY: 'qr_custom_history',
     THEME_KEY: 'qr_theme_preference',
+    INPUT_HIDDEN_KEY: 'qr_input_hidden',
     EXPIRE_DAYS: 7,
 
     // QR rendering
@@ -114,6 +115,54 @@
     _save(mode) {
       chrome.storage.local.set({ [Config.THEME_KEY]: mode }, () => {
         if (chrome.runtime.lastError) console.warn('Failed to save theme:', chrome.runtime.lastError);
+      });
+    },
+  };
+
+  // ==================== Input Toggle ====================
+
+  const InputToggle = {
+    hidden: false,
+
+    async init() {
+      this.hidden = await this._getSaved();
+      this._apply(this.hidden);
+    },
+
+    toggle() {
+      this.hidden = !this.hidden;
+      this._apply(this.hidden);
+      this._save(this.hidden);
+      return this.hidden;
+    },
+
+    _apply(hidden) {
+      const doc = document.documentElement;
+      const btn = document.getElementById('btn-toggle-input');
+      doc.removeAttribute('data-input-hidden');
+      if (hidden) {
+        doc.setAttribute('data-input-hidden', '');
+        btn.title = '显示输入框';
+        btn.setAttribute('aria-label', '显示输入框');
+        btn.classList.add('toggle-active');
+      } else {
+        btn.title = '隐藏输入框';
+        btn.setAttribute('aria-label', '隐藏输入框');
+        btn.classList.remove('toggle-active');
+      }
+    },
+
+    _getSaved() {
+      return new Promise((resolve) => {
+        chrome.storage.local.get(Config.INPUT_HIDDEN_KEY, (result) => {
+          resolve(!!result[Config.INPUT_HIDDEN_KEY]);
+        });
+      });
+    },
+
+    _save(hidden) {
+      chrome.storage.local.set({ [Config.INPUT_HIDDEN_KEY]: hidden }, () => {
+        if (chrome.runtime.lastError) console.warn('Failed to save input visibility:', chrome.runtime.lastError);
       });
     },
   };
@@ -373,6 +422,7 @@
         urlInput: document.getElementById('url-input'),
         btnSave: document.getElementById('btn-save'),
         btnDownload: document.getElementById('btn-download'),
+        btnToggleInput: document.getElementById('btn-toggle-input'),
         btnClear: document.getElementById('btn-clear'),
         btnTheme: document.getElementById('btn-theme'),
         historySection: document.getElementById('history-section'),
@@ -417,7 +467,7 @@
         '<div class="history-actions">' +
           '<button class="btn-icon pin-btn' + (item.pinned ? ' pin-active' : '') +
             '" title="' + (item.pinned ? '取消置顶' : '置顶') + '" aria-label="' + (item.pinned ? '取消置顶' : '置顶') + '">' +
-            (item.pinned ? '⭐' : '☆') +
+            '<svg viewBox="0 0 1024 1024"><path d="M238.933333 145.066667a25.6 25.6 0 0 1 0-51.2h546.133334a25.6 25.6 0 1 1 0 51.2H238.933333z m110.933334 460.8H204.8a25.6 25.6 0 0 1-19.012267-42.734934l307.2-341.333333a25.6 25.6 0 0 1 38.024534 0l307.2 341.333333A25.6 25.6 0 0 1 819.2 605.866667h-145.066667V921.6a25.6 25.6 0 0 1-25.6 25.6h-273.066666a25.6 25.6 0 0 1-25.6-25.6v-315.733333z"/></svg>' +
           '</button>' +
           '<button class="btn-icon delete-btn" title="删除" aria-label="删除">✕</button>' +
         '</div>';
@@ -467,6 +517,7 @@
   const App = {
     async init() {
       await Theme.init();
+      await InputToggle.init();
       QR.init();
       Toast.init();
       UI.init();
@@ -482,7 +533,7 @@
     },
 
     _bindEvents() {
-      const { urlInput, btnSave, btnDownload, btnClear, btnTheme } = UI.els;
+      const { urlInput, btnSave, btnDownload, btnToggleInput, btnClear, btnTheme } = UI.els;
 
       let debounceTimer;
       urlInput.addEventListener('input', () => {
@@ -509,6 +560,11 @@
         } else {
           Toast.show('暂无内容');
         }
+      });
+
+      btnToggleInput.addEventListener('click', () => {
+        const hidden = InputToggle.toggle();
+        Toast.show(hidden ? '已隐藏输入框' : '已显示输入框');
       });
 
       btnClear.addEventListener('click', () => {
