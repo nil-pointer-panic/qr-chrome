@@ -375,6 +375,7 @@
         btnDownload: document.getElementById('btn-download'),
         btnClear: document.getElementById('btn-clear'),
         btnTheme: document.getElementById('btn-theme'),
+        historySection: document.getElementById('history-section'),
         historyList: document.getElementById('history-list'),
       };
     },
@@ -390,10 +391,10 @@
 
     renderHistory(list) {
       const container = this.els.historyList;
-      this.els.btnClear.style.display = list.length ? '' : 'none';
+      this.els.historySection.style.display = list.length ? '' : 'none';
 
       if (!list.length) {
-        container.innerHTML = '<div class="history-empty">暂无记录</div>';
+        container.innerHTML = '';
         return;
       }
 

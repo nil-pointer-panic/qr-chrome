@@ -86,12 +86,47 @@ body {
   color: var(--color-text);
 }
 
-/* --- Theme Toggle --- */
-.theme-toggle-wrapper {
+/* --- Toolbar --- */
+.toolbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 6px;
   padding: 0 6px;
+}
+
+.toolbar-left {
+  display: flex;
+  gap: 2px;
+}
+
+.btn-toolbar {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  transition: all 0.15s ease;
+}
+
+.btn-toolbar:hover {
+  background: var(--color-hover);
+  color: var(--color-text);
+}
+
+.btn-toolbar svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .btn-theme {
@@ -178,11 +213,11 @@ body {
 
 .input-group input {
   width: 100%;
-  padding: 10px 76px 10px 12px;
+  padding: 10px 12px;
   border: none;
   background: var(--color-bg);
   border-radius: var(--radius-input);
-  font-size: 14px;
+  font-size: 11px;
   color: var(--color-text);
   outline: none;
   transition: background 0.2s ease;
@@ -194,53 +229,6 @@ body {
 
 .input-group input:focus {
   background: var(--color-hover);
-}
-
-/* --- Action buttons in input bar --- */
-.input-actions {
-  position: absolute;
-  right: 4px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  gap: 2px;
-}
-
-.btn-input {
-  width: 30px;
-  height: 30px;
-  border: none;
-  background: none;
-  color: var(--color-text-tertiary);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s ease;
-}
-
-.btn-input:hover {
-  color: var(--color-text);
-  background: var(--color-hover);
-}
-
-.btn-input svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.btn-input.download-btn {
-  color: var(--color-text-secondary);
-}
-
-.btn-input.download-btn:hover {
-  color: var(--color-accent);
 }
 
 /* --- QR Code --- */
