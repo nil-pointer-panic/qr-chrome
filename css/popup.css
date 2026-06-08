@@ -236,8 +236,11 @@ body {
   background: var(--color-hover);
 }
 
-/* --- Input Hidden --- */
-[data-input-hidden] .input-group {
+/* --- Pure Mode --- */
+[data-pure-mode] .input-group,
+[data-pure-mode] .toolbar-left .btn-toolbar,
+[data-pure-mode] #btn-theme,
+[data-pure-mode] #history-section {
   display: none;
 }
 

@@ -19,7 +19,7 @@
     // Storage
     STORAGE_KEY: 'qr_custom_history',
     THEME_KEY: 'qr_theme_preference',
-    INPUT_HIDDEN_KEY: 'qr_input_hidden',
+    PURE_MODE_KEY: 'qr_pure_mode',
     EXPIRE_DAYS: 7,
 
     // QR rendering
@@ -119,50 +119,50 @@
     },
   };
 
-  // ==================== Input Toggle ====================
+  // ==================== Pure Mode ====================
 
-  const InputToggle = {
-    hidden: false,
+  const PureMode = {
+    active: false,
 
     async init() {
-      this.hidden = await this._getSaved();
-      this._apply(this.hidden);
+      this.active = await this._getSaved();
+      this._apply(this.active);
     },
 
     toggle() {
-      this.hidden = !this.hidden;
-      this._apply(this.hidden);
-      this._save(this.hidden);
-      return this.hidden;
+      this.active = !this.active;
+      this._apply(this.active);
+      this._save(this.active);
+      return this.active;
     },
 
-    _apply(hidden) {
+    _apply(active) {
       const doc = document.documentElement;
-      const btn = document.getElementById('btn-toggle-input');
-      doc.removeAttribute('data-input-hidden');
-      if (hidden) {
-        doc.setAttribute('data-input-hidden', '');
-        btn.title = '显示输入框';
-        btn.setAttribute('aria-label', '显示输入框');
+      const btn = document.getElementById('btn-toggle-pure');
+      if (active) {
+        doc.setAttribute('data-pure-mode', '');
+        btn.title = '退出纯净模式';
+        btn.setAttribute('aria-label', '退出纯净模式');
         btn.classList.add('toggle-active');
       } else {
-        btn.title = '隐藏输入框';
-        btn.setAttribute('aria-label', '隐藏输入框');
+        doc.removeAttribute('data-pure-mode');
+        btn.title = '纯净模式';
+        btn.setAttribute('aria-label', '纯净模式');
         btn.classList.remove('toggle-active');
       }
     },
 
     _getSaved() {
       return new Promise((resolve) => {
-        chrome.storage.local.get(Config.INPUT_HIDDEN_KEY, (result) => {
-          resolve(!!result[Config.INPUT_HIDDEN_KEY]);
+        chrome.storage.local.get(Config.PURE_MODE_KEY, (result) => {
+          resolve(!!result[Config.PURE_MODE_KEY]);
         });
       });
     },
 
-    _save(hidden) {
-      chrome.storage.local.set({ [Config.INPUT_HIDDEN_KEY]: hidden }, () => {
-        if (chrome.runtime.lastError) console.warn('Failed to save input visibility:', chrome.runtime.lastError);
+    _save(active) {
+      chrome.storage.local.set({ [Config.PURE_MODE_KEY]: active }, () => {
+        if (chrome.runtime.lastError) console.warn('Failed to save pure mode:', chrome.runtime.lastError);
       });
     },
   };
@@ -422,7 +422,7 @@
         urlInput: document.getElementById('url-input'),
         btnSave: document.getElementById('btn-save'),
         btnDownload: document.getElementById('btn-download'),
-        btnToggleInput: document.getElementById('btn-toggle-input'),
+        btnTogglePure: document.getElementById('btn-toggle-pure'),
         btnClear: document.getElementById('btn-clear'),
         btnTheme: document.getElementById('btn-theme'),
         historySection: document.getElementById('history-section'),
@@ -517,7 +517,7 @@
   const App = {
     async init() {
       await Theme.init();
-      await InputToggle.init();
+      await PureMode.init();
       QR.init();
       Toast.init();
       UI.init();
@@ -533,7 +533,7 @@
     },
 
     _bindEvents() {
-      const { urlInput, btnSave, btnDownload, btnToggleInput, btnClear, btnTheme } = UI.els;
+      const { urlInput, btnSave, btnDownload, btnTogglePure, btnClear, btnTheme } = UI.els;
 
       let debounceTimer;
       urlInput.addEventListener('input', () => {
@@ -562,9 +562,9 @@
         }
       });
 
-      btnToggleInput.addEventListener('click', () => {
-        const hidden = InputToggle.toggle();
-        Toast.show(hidden ? '已隐藏输入框' : '已显示输入框');
+      btnTogglePure.addEventListener('click', () => {
+        const active = PureMode.toggle();
+        Toast.show(active ? '纯净模式' : '标准模式');
       });
 
       btnClear.addEventListener('click', () => {
