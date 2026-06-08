@@ -134,10 +134,10 @@ body {
 /* Dark mode: show moon, hide sun */
 @media (prefers-color-scheme: dark) {
   .btn-theme .icon-sun {
-    display: block;
+    display: none;
   }
   .btn-theme .icon-moon {
-    display: none;
+    display: block;
   }
 }
 

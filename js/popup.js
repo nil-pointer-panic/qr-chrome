@@ -112,7 +112,9 @@
     },
 
     _save(mode) {
-      chrome.storage.local.set({ [Config.THEME_KEY]: mode });
+      chrome.storage.local.set({ [Config.THEME_KEY]: mode }, () => {
+        if (chrome.runtime.lastError) console.warn('Failed to save theme:', chrome.runtime.lastError);
+      });
     },
   };
 
@@ -128,8 +130,11 @@
     },
 
     set(list) {
-      return new Promise((resolve) => {
-        chrome.storage.local.set({ [Config.STORAGE_KEY]: list }, resolve);
+      return new Promise((resolve, reject) => {
+        chrome.storage.local.set({ [Config.STORAGE_KEY]: list }, () => {
+          if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+          else resolve();
+        });
       });
     },
   };
@@ -186,7 +191,12 @@
       }
 
       const qr = this._createQR(text);
-      const cellSize = Math.floor(Config.QR_CANVAS_MAX / qr.getModuleCount());
+      if (!qr) {
+        this._drawEmpty();
+        Toast.show('内容过长，无法生成二维码');
+        return;
+      }
+      const cellSize = Math.max(1, Math.floor(Config.QR_CANVAS_MAX / qr.getModuleCount()));
       this._renderModules(qr, this.canvas, cellSize, Config.QR_MARGIN);
     },
 
@@ -194,6 +204,7 @@
       if (!this.currentText) return false;
 
       const qr = this._createQR(this.currentText);
+      if (!qr) return false;
       const scale = Config.QR_DOWNLOAD_SCALE;
       const margin = Config.QR_MARGIN * scale;
 
@@ -210,10 +221,14 @@
     // --- Private helpers ---
 
     _createQR(text) {
-      const qr = qrcode(0, Config.QR_ERROR_LEVEL);
-      qr.addData(text);
-      qr.make();
-      return qr;
+      try {
+        const qr = qrcode(0, Config.QR_ERROR_LEVEL);
+        qr.addData(text);
+        qr.make();
+        return qr;
+      } catch {
+        return null;
+      }
     },
 
     _renderModules(qr, canvas, cellSize, margin) {
@@ -284,9 +299,10 @@
 
     async add(url) {
       if (!url) return;
+      const existing = this.items.find((i) => i.url === url);
       this.items = this.items.filter((i) => i.url !== url);
       this.items = this._cleanExpired(this.items);
-      this.items.unshift({ url, time: Date.now(), pinned: false });
+      this.items.unshift({ url, time: Date.now(), pinned: existing?.pinned ?? false });
       this._sort();
       await this._persist();
     },
@@ -316,13 +332,18 @@
     },
 
     _sort() {
-      const pinned = this.items.filter((i) => i.pinned).sort((a, b) => b.time - a.time);
-      const rest = this.items.filter((i) => !i.pinned).sort((a, b) => b.time - a.time);
-      this.items = [...pinned, ...rest];
+      this.items.sort((a, b) => {
+        if (a.pinned !== b.pinned) return b.pinned ? 1 : -1;
+        return b.time - a.time;
+      });
     },
 
     async _persist() {
-      await Storage.set(this.items);
+      try {
+        await Storage.set(this.items);
+      } catch {
+        Toast.show('保存失败');
+      }
     },
   };
 
@@ -379,10 +400,10 @@
         '</div>' +
         '<div class="history-actions">' +
           '<button class="btn-icon pin-btn' + (item.pinned ? ' pin-active' : '') +
-            '" title="' + (item.pinned ? '取消置顶' : '置顶') + '">' +
+            '" title="' + (item.pinned ? '取消置顶' : '置顶') + '" aria-label="' + (item.pinned ? '取消置顶' : '置顶') + '">' +
             (item.pinned ? '⭐' : '☆') +
           '</button>' +
-          '<button class="btn-icon delete-btn" title="删除">✕</button>' +
+          '<button class="btn-icon delete-btn" title="删除" aria-label="删除">✕</button>' +
         '</div>';
 
       div.querySelector('.history-info').addEventListener('click', () => {
@@ -447,9 +468,11 @@
     _bindEvents() {
       const { urlInput, btnSave, btnDownload, btnClear, btnTheme } = UI.els;
 
+      let debounceTimer;
       urlInput.addEventListener('input', () => {
         urlInput.title = urlInput.value;
-        QR.generate(urlInput.value);
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => QR.generate(UI.getInput()), 150);
       });
 
       btnSave.addEventListener('click', () => {
@@ -491,9 +514,14 @@
       UI.renderHistory(list);
 
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0]?.url) {
-          UI.setInput(tabs[0].url);
-          QR.generate(tabs[0].url);
+        if (chrome.runtime.lastError) {
+          QR.generate('');
+          return;
+        }
+        const url = tabs[0]?.url;
+        if (url && (url.startsWith('http:') || url.startsWith('https:'))) {
+          UI.setInput(url);
+          QR.generate(url);
         } else {
           QR.generate('');
         }
