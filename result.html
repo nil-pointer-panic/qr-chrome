@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="css/result.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="title" id="mode-title"></h1>
+
+    <div id="error-section" class="section" style="display:none">
+      <div class="error-msg" id="error-msg"></div>
+    </div>
+
+    <div id="qr-section" class="section" style="display:none">
+      <div class="qr-wrapper">
+        <canvas id="qr-canvas"></canvas>
+      </div>
+      <div class="actions">
+        <button class="btn-action" id="btn-download" aria-label="下载二维码">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          下载
+        </button>
+        <button class="btn-action" id="btn-copy-text" aria-label="复制文本">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          复制文本
+        </button>
+      </div>
+    </div>
+
+    <div id="preview-section" class="section" style="display:none">
+      <div class="section-label">来源图片</div>
+      <div class="preview-wrapper">
+        <img id="image-preview" alt="来源图片预览">
+      </div>
+    </div>
+
+    <div id="result-section" class="section" style="display:none">
+      <div class="section-label" id="result-label">识别结果</div>
+      <div class="result-text" id="result-text"></div>
+      <div class="actions">
+        <button class="btn-action" id="btn-copy" aria-label="复制">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          复制
+        </button>
+        <button class="btn-action" id="btn-open" style="display:none" aria-label="打开链接">
+          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          打开链接
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="lib/qrcode.min.js"></script>
+  <script src="lib/jsqr.js"></script>
+  <script src="js/result.js"></script>
+</body>
+</html>
