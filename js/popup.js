@@ -212,13 +212,28 @@
       this._renderModules(qr, offscreen, scale, margin);
 
       const link = document.createElement('a');
-      link.download = 'qrcode.png';
+      link.download = this._downloadName(this.currentText);
       link.href = offscreen.toDataURL('image/png');
       link.click();
       return true;
     },
 
     // --- Private helpers ---
+
+    _downloadName(text) {
+      const pad = (n) => (n < 10 ? '0' + n : '' + n);
+      const now = new Date();
+      const date = pad(now.getFullYear() % 100) + pad(now.getMonth() + 1) + pad(now.getDate());
+
+      try {
+        const host = new URL(text).hostname.replace(/^www\./, '');
+        if (host) {
+          const domain = host.split('.').slice(-2).join('_');
+          return 'qr_' + domain + '_' + date + '.png';
+        }
+      } catch { /* not a URL */ }
+      return 'qr_' + date + '.png';
+    },
 
     _createQR(text) {
       try {
